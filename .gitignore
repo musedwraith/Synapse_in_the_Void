@@ -1,1 +1,4 @@
-/build/
+# Environment
+.vscode/
+# Temporary build files
+build/
