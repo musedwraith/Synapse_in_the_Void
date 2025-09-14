@@ -6,11 +6,7 @@
 #include <stdlib.h>
 // changes strings
 #include <string.h>
-
 #include <errno.h>
-
-// suppress the unsafe warning for strncpy
-#define _CRT_SECURE_NO_WARNINGS
 
 // can't use MAX_NAME_LENGTH for BUFFER SIZE
 //#define BUFFER_SIZE 16
@@ -45,7 +41,7 @@ typedef struct {
 typedef struct {
     char from[MAX_DETAIL_LENGTH];
     char to[MAX_DETAIL_LENGTH];
-    char label[MAX_REL_TYPE_LENGTH + MAX_DETAIL_LENGTH];
+    char label[MAX_DETAIL_LENGTH];
 } Relationship;
 
 // repeatedly calls fgetc(stream), reading from the stdin, 
@@ -160,7 +156,9 @@ int main(void) {
     printf("Type 'done' to finish.\n");
 
     // no relationships exist at the start of the program
+    // INITIAL_CAPACITY = current array size
     int rel_count = 0;
+    int rel_capacity = INITIAL_CAPACITY;
 
     while(1) {
         // lists the relationships by number
@@ -179,10 +177,25 @@ int main(void) {
         // r.from = first word = source character
         // r.to = second word = target character
         // r.label = everything else = the description of the relationship
-        if (sscanf(buffer, "%99s %99s %[^\n]", r.from, r.to, r.label) < 3) {
+        if (sscanf(buffer, "%s %s %[^\n]", r.from, r.to, r.label) < 3) {
             printf("WRONG INPUT. Try again.\n");
             continue;
         }
+
+        // realloc logic for relationships
+        // scales, memory grows dynamically as the user keeps adding relationships
+        if (rel_count >= rel_capacity){
+            rel_capacity *= 2;
+            Relationship* temp = realloc(relationships, rel_capacity * sizeof(Relationship));
+            if (!temp) {
+                printf("ERROR: realloc failed for relationships.\n");
+                free(relationships);
+                free(characters);
+                return 1;
+            }
+            relationships = temp;
+        }
+
         // save the relationships
         relationships[rel_count++] = r;
     }
