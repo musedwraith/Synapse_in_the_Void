@@ -17,6 +17,8 @@ Each **node** is a being in your story — mortal or myth — with the option to
 - Displays them back to the user
 - Uses dynamic memory
 - Cleans up memory before exit
+- Prevent duplicates
+- Edit or Rename Characters
 
 Connections between characters are:
 
@@ -43,8 +45,6 @@ Whether your story is a whispered myth on the edge of a dying star or a psycholo
 - Export to image / shareable format
 - Save/load your character network
 
-- Prevent duplicates
-- Edit or Rename Characters
 - Delete Characters
 - Story both type and detail separately
 - Edit relationships

@@ -163,6 +163,60 @@ int main(void) {
         printf("~ %s\n", characters[i].name);
     }
 
+    printf("\nEdit a character's name? (yes/no): ");
+    if (fgets(buffer, MAX_BUFFER_SIZE, stdin)) {
+        char* newL = strchr(buffer, '\n');
+        if (newL) *newL = '\0';
+
+        if (strcmp(buffer, "yes") == 0) {
+            while (1) {
+                printf("\nCharacters:\n");
+                for( int i = 0; i < count; i++) {
+                    printf("%d. %s\n", i + 1, characters[i].name);
+                }
+                printf("Input the number of the character to edit OR input 0 to stop: ");
+
+                if (!fgets(buffer, MAX_BUFFER_SIZE, stdin)) break;
+                // atoi compares the number input by the user in the string to an integer index in the array
+                int choice = atoi(buffer);
+
+                if (choice == 0) break;
+                if (choice < 1 || choice > count) {
+                    printf("WRONG. Try again\n");
+                    continue;
+                }
+
+                printf("Enter a new name for '%s': ", characters[choice - 1].name);
+                if (fgets(buffer, MAX_BUFFER_SIZE, stdin)) {
+                    char* newL = strchr(buffer, '\n');
+                    if (newL) *newL = '\0';
+                    
+                    // check for a duplicated before renaming a character
+                    int duplicate = 0;
+                    for (int rename = 0; rename < count; rename++) {
+                        if (rename != (choice - 1) && strcmp(characters[rename].name, buffer) == 0) {
+                            duplicate = 1;
+                            break;
+                        }
+                    }
+
+                    if (duplicate) {
+                        printf("OH NO! Character '%s' already exists. Skipping rename entry.\n", buffer);
+                    } else {
+                        if (strncmp(buffer, characters[choice - 1].name, MAX_NAME_LENGTH) == 0) {
+                            printf("OH NO! '%s' is taken. Skipping this rename.", buffer);
+                        } else {
+                            strncpy(characters[choice -1].name, buffer, MAX_NAME_LENGTH - 1);
+                            characters[choice - 1].name[MAX_NAME_LENGTH - 1] = '\0';
+                            printf("CHARACTER UPDATED!\n");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
     printf("\nEnter relationship types between characters.\n");
     printf("Enter in the format of: <from> <to> <label>\n");
     printf("Example: Connor Liz engaged\n");
