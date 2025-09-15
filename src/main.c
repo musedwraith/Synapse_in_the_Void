@@ -108,9 +108,23 @@ int main(void) {
         *newL = '\0';
 
         // stop asking for input when the user types done
-        // break the loop and exit
+     // break the loop and exit
         if (strcmp(buffer, "done") == 0){
             break;
+        }   
+
+        //check for duplicates
+        int duplicate = 0;
+        for (int i = 0; i < count; i++) {
+            if (strcmp(characters[i].name, buffer) == 0) {
+                duplicate = 1;
+                break;
+            }
+        }
+
+        if (duplicate) {
+            printf("OH NO! Character '%s' already exists. Skipping this entry.\n", buffer);
+            continue;
         }
 
         // check if the arry is full
@@ -194,6 +208,26 @@ int main(void) {
                 return 1;
             }
             relationships = temp;
+        }
+
+        // check for duplicate relationships
+        // this has to be put here because it has to be under where r. is defined
+        // == 0 is a boolean
+        // && true && true && true
+        int duplicate = 0;
+        for (int i =0; i < rel_count; i++) {
+            if (strcmp(relationships[i].from, r.from) == 0 &&
+                strcmp(relationships[i].to, r.to) == 0 &&
+                strcmp(relationships[i].label, r.label) == 0) {
+                duplicate = 1;
+                break;
+            }
+        }
+
+        if (duplicate) {
+            printf("OH NO! Relationship '%s -> %s : %s' already exists. Skipping this entry.\n",
+                r.from, r.to, r.label);
+                continue;
         }
 
         // save the relationships
